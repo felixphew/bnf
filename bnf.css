@@ -45,11 +45,12 @@ header > h2 > .version {
 }
 
 .suggestion > p {
-	margin: 12px;
+	margin: 24px 0px 8px;
 }
 
 .suggestion > span {
 	text-transform: uppercase;
+	font-size: 15px
 }
 
 .suggestion > span em {
