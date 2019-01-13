@@ -131,10 +131,14 @@ func irc() {
 				log.Printf("Sent PONG %s", match[1])
 			} else if match := privmsg.FindStringSubmatch(msg); match != nil {
 				if ytmatch := youtube.FindStringSubmatch(match[2]); ytmatch != nil {
-					log.Printf("Found link %s: <%s> %s", ytmatch[1], match[1], match[2])
-					_, err := db.Exec("INSERT INTO submissions(user, videoid, message) VALUES(?, ?, ?);", match[1], ytmatch[1], match[2])
-					if err != nil {
-						log.Print(err)
+					if match[1] == "bravenewfavesbot" {
+						log.Printf("Ignored link %s: <%s> %s", ytmatch[1], match[1], match[2])
+					} else {
+						log.Printf("Found link %s: <%s> %s", ytmatch[1], match[1], match[2])
+						_, err := db.Exec("INSERT INTO submissions(user, videoid, message) VALUES(?, ?, ?);", match[1], ytmatch[1], match[2])
+						if err != nil {
+							log.Print(err)
+						}
 					}
 				} else {
 					log.Printf("<%s> %s", match[1], match[2])
