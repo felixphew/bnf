@@ -75,6 +75,21 @@ func callback(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
+func play(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.FormValue("id"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	_, err = db.Exec(`INSERT INTO history(user, videoid, message, date) SELECT user, videoid, message, CURRENT_DATE FROM submissions WHERE id = ?1;
+DELETE FROM submissions WHERE id = ?1`, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
 func delete(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.FormValue("id"))
 	if err != nil {
@@ -139,6 +154,7 @@ func main() {
 	}
 
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS submissions(id INTEGER PRIMARY KEY, user TEXT, videoid TEXT, message TEXT);
+CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY, user TEXT, videoid TEXT, message TEXT, date TEXT);
 CREATE TABLE IF NOT EXISTS auth(username TEXT, password TEXT);`)
 	if err != nil {
 		log.Fatal(err)
