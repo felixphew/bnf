@@ -16,7 +16,7 @@ var tmpl *template.Template
 
 func init() {
 	models.InitDB()
-	tmpl = template.Must(template.ParseGlob("*.html"))
+	tmpl = template.Must(template.ParseGlob("templates/*.html"))
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
