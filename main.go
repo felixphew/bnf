@@ -29,7 +29,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	tmpl.Execute(w, sugs)
+	tmpl.ExecuteTemplate(w, "index.html", sugs)
 }
 
 func callback(w http.ResponseWriter, r *http.Request) {
@@ -79,7 +79,7 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/callback", callback)
 	http.HandleFunc("/delete", delete)
-	http.Handle("/bnf.css", http.FileServer(http.Dir(".")))
+	http.Handle("/public/", http.StripPrefix("/public", http.FileServer(http.Dir("public"))))
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
