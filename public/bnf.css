@@ -1,6 +1,7 @@
 body {
 	font: 300 18px/calc(7 / 6) Helvetica, Arial, sans-serif;
 	margin: 80px 8px 8px;
+	background: #ccc
 }
 
 header {
@@ -41,27 +42,70 @@ header > h2 > .version {
 }
 
 .suggestion {
-	font-size: 15px;
-	margin-bottom: 16px;
+	background-color: white;
+	border-radius: 5px;
+	padding: 1px;
+	padding-left: 20px;
+	margin-top: 20px;
 }
 
-.suggestion > p {
-	font-size: 18px;
-	margin: 0px 0px 0px 0px;
+.leftcolumn {
+	float: left;
+	width: 33%
 }
 
-.suggestion > p > p1 {
-	font-size: 15px;
+.rightcolumn {
+	float: right;
+	width: 66%
 }
 
-.suggestion > span {
-	font-size: 16px;
-	margin-left: 15px;
-	margin-top: 0px;
-	margin-bottom: 8px;
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
 }
 
-.suggestion > span a {
-	text-decoration: inherit;
-	color: inherit;
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+.container {
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.col-25 {
+  float: left;
+  width: 150px;
+  margin-top: 6px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.suggestion:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
 }

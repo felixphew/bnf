@@ -9,9 +9,16 @@
 <body>
 	{{template "header"}}
 	{{- range .}}
-	<div class="suggestion">
-		<p>{{.Artist}} by {{.Title}} || <a href="{{.URL}}" target="_blank">Play</a> || <p1>Suggested by {{.UserName}}</p1></p>
-		<span>{{.Description}}</span>
+	<div class="row">
+		<div class="suggestion">
+			<div class="leftcolumn">
+				<h2><a href="{{.URL}}?autoplay=0" target="_blank">{{.Artist}} - {{.Title}}</a></h2>
+				<h5>Submitted by {{.UserName}}</h5>
+			</div>
+			<div class="rightcolumn">
+				<p>{{.Description}}</p>
+			</div>
+		</div>
 	</div>
 	{{- end}}
 </body>
