@@ -1,12 +1,16 @@
 package models
 
 type Suggestion struct {
-	VideoID, Message, User string
-	ID                     int
+	ID          int
+	Title       string
+	Artist      string
+	Description string
+	URL         string
+	UserName    string
 }
 
 func GetAllSongs() ([]*Suggestion, error) {
-	rows, err := db.Query("SELECT videoid, message, user, id FROM submissions;")
+	rows, err := db.Query("SELECT title, artist, description, url, username FROM submissions;")
 	if err != nil {
 		return nil, err
 	}
@@ -15,7 +19,7 @@ func GetAllSongs() ([]*Suggestion, error) {
 	sugs := make([]*Suggestion, 0)
 	for rows.Next() {
 		s := new(Suggestion)
-		err := rows.Scan(&s.VideoID, &s.Message, &s.User, &s.ID)
+		err := rows.Scan(&s.Title, &s.Artist, &s.Description, &s.URL, &s.UserName)
 		if err != nil {
 			return nil, err
 		}
@@ -27,8 +31,8 @@ func GetAllSongs() ([]*Suggestion, error) {
 	return sugs, nil
 }
 
-func AddSuggestion(user string, videoid string, message string) error {
-	_, err := db.Exec("INSERT INTO submissions(user, videoid, message) VALUES(?, ?, ?);", user, videoid, message)
+func AddSuggestion(title string, artist string, description string, url string, username string) error {
+	_, err := db.Exec("INSERT INTO submissions(title, artist, description, url, username) VALUES(?, ?, ?, ?, ?);", title, artist, description, url, username)
 	return err
 }
 

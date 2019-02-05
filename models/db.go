@@ -16,7 +16,7 @@ func InitDB() {
 		log.Fatal(err)
 	}
 
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS submissions(id INTEGER PRIMARY KEY, user TEXT, videoid TEXT, message TEXT);
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS submissions(id INTEGER PRIMARY KEY, title TEXT, artist TEXT, description TEXT, url TEXT, username TEXT);
 CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY, user TEXT, videoid TEXT, message TEXT, date TEXT);
 CREATE TABLE IF NOT EXISTS auth(username TEXT, password TEXT);`)
 	if err != nil {
