@@ -41,26 +41,24 @@ header > h2 > .version {
 }
 
 .suggestion {
-	font-size: 16px;
+	font-size: 15px;
 	margin-bottom: 16px;
 }
 
 .suggestion > p {
-	font-size: 20px;
+	font-size: 18px;
 	margin: 0px 0px 0px 0px;
 }
 
-.suggestion > span {
-	text-transform: uppercase;
+.suggestion > p > p1 {
 	font-size: 15px;
+}
+
+.suggestion > span {
+	font-size: 16px;
 	margin-left: 15px;
 	margin-top: 0px;
 	margin-bottom: 8px;
-}
-
-.suggestion > span em {
-	font-style: inherit;
-	font-weight: 600;
 }
 
 .suggestion > span a {

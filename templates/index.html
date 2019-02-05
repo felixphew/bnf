@@ -10,10 +10,8 @@
 	{{template "header"}}
 	{{- range .}}
 	<div class="suggestion">
-		<p>{{.Artist}} by {{.Title}} || <a href="{{.URL}}" target="_blank">Play</a></span></p>
-		{{.Description}}
-		<br>
-		<span>Suggested by {{.UserName}}
+		<p>{{.Artist}} by {{.Title}} || <a href="{{.URL}}" target="_blank">Play</a> || <p1>Suggested by {{.UserName}}</p1></p>
+		<span>{{.Description}}</span>
 	</div>
 	{{- end}}
 </body>
