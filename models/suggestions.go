@@ -2,8 +2,8 @@ package models
 
 type Suggestion struct {
 	ID          int
-	Title       string
 	Artist      string
+	Title       string
 	Description string
 	URL         string
 	UserName    string
