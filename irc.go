@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bnf/models"
 	"bufio"
 	"crypto/tls"
 	"fmt"
@@ -51,7 +50,7 @@ func irc() {
 						log.Printf("Ignored link %s: <%s> %s", ytmatch[1], match[1], match[2])
 					} else {
 						log.Printf("Found link %s: <%s> %s", ytmatch[1], match[1], match[2])
-						err = models.AddSuggestion(match[1], ytmatch[1], match[2])
+						//err = models.AddSuggestion(match[1], ytmatch[1], match[2])
 						if err != nil {
 							log.Print(err)
 						}

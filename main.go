@@ -19,17 +19,48 @@ func init() {
 	tmpl = template.Must(template.ParseGlob("templates/*.html"))
 }
 
+func main() {
+	http.HandleFunc("/", index)
+	http.HandleFunc("/suggest", suggest)
+	http.HandleFunc("/post", post)
+	http.HandleFunc("/callback", callback)
+	http.HandleFunc("/delete", delete)
+	http.Handle("/public/", http.StripPrefix("/public", http.FileServer(http.Dir("public"))))
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
 func index(w http.ResponseWriter, r *http.Request) {
-	if tks == nil {
+	/*if tks == nil {
 		http.Redirect(w, r, conf.AuthCodeURL("potato", oauth2.AccessTypeOffline), http.StatusSeeOther)
 		return
-	}
+	}*/
 	sugs, err := models.GetAllSongs()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	tmpl.ExecuteTemplate(w, "index.html", sugs)
+}
+
+func suggest(w http.ResponseWriter, r *http.Request) {
+	tmpl.ExecuteTemplate(w, "suggest.html", models.Suggestion{})
+}
+
+func post(w http.ResponseWriter, r *http.Request) {
+	s := models.Suggestion{0,
+		r.FormValue("artist"),
+		r.FormValue("title"),
+		r.FormValue("description"),
+		r.FormValue("url"),
+		r.FormValue("username"),
+	}
+	err := models.AddSuggestion(s)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func callback(w http.ResponseWriter, r *http.Request) {
@@ -73,13 +104,4 @@ func delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
-}
-
-func main() {
-	http.HandleFunc("/", index)
-	http.HandleFunc("/callback", callback)
-	http.HandleFunc("/delete", delete)
-	http.Handle("/public/", http.StripPrefix("/public", http.FileServer(http.Dir("public"))))
-
-	log.Fatal(http.ListenAndServe(":8080", nil))
 }

@@ -41,16 +41,21 @@ header > h2 > .version {
 }
 
 .suggestion {
-	margin: 18px 0;
+	font-size: 16px;
+	margin-bottom: 16px;
 }
 
 .suggestion > p {
-	margin: 24px 0px 8px;
+	font-size: 20px;
+	margin: 0px 0px 0px 0px;
 }
 
 .suggestion > span {
 	text-transform: uppercase;
-	font-size: 15px
+	font-size: 15px;
+	margin-left: 15px;
+	margin-top: 0px;
+	margin-bottom: 8px;
 }
 
 .suggestion > span em {

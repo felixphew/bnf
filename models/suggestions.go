@@ -31,8 +31,8 @@ func GetAllSongs() ([]*Suggestion, error) {
 	return sugs, nil
 }
 
-func AddSuggestion(title string, artist string, description string, url string, username string) error {
-	_, err := db.Exec("INSERT INTO submissions(title, artist, description, url, username) VALUES(?, ?, ?, ?, ?);", title, artist, description, url, username)
+func AddSuggestion(s Suggestion) error {
+	_, err := db.Exec("INSERT INTO submissions(title, artist, description, url, username) VALUES(?, ?, ?, ?, ?);", s.Title, s.Artist, s.Description, s.URL, s.UserName)
 	return err
 }
 

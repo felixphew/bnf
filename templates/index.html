@@ -10,9 +10,10 @@
 	{{template "header"}}
 	{{- range .}}
 	<div class="suggestion">
-		<p>{{.Artist}} - {{.Title}}</p> {{.Description}}
-		<span>Suggested by <em>{{.Username}}</em> // <a href="{{.URL}}" target="_blank"><em>Play</em></a>
-			// <a href="/play?id={{.ID}}"><em>Remove</em> and add to played</a> // <a href="/delete?id={{.ID}}"><em>Remove</em></a></span>
+		<p>{{.Artist}} by {{.Title}} || <a href="{{.URL}}" target="_blank">Play</a></span></p>
+		{{.Description}}
+		<br>
+		<span>Suggested by {{.UserName}}
 	</div>
 	{{- end}}
 </body>
