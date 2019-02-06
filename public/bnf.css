@@ -1,0 +1,111 @@
+body {
+	font: 300 18px/calc(7 / 6) Helvetica, Arial, sans-serif;
+	margin: 80px 8px 8px;
+	background: #ccc
+}
+
+header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	background-color: black;
+	color: white;
+	padding: 8px;
+}
+
+header > img {
+	height: 56px;
+	float: left;
+	margin-right: 8px;
+}
+
+header > h1, header > h2 {
+	text-transform: uppercase;
+	margin: 0;
+	font-size: 24px;
+}
+
+header > h1 {
+	font-weight: 600;
+	color: #DAAD00;
+}
+
+header > h2 {
+	font-weight: 300;
+	color: #1CC2E8;
+}
+
+header > h2 > .version {
+	text-transform: none;
+	color: white;
+}
+
+.suggestion {
+	background-color: white;
+	border-radius: 5px;
+	padding: 1px;
+	padding-left: 20px;
+	margin-top: 10px;
+}
+
+.leftcolumn {
+	float: left;
+	width: 33%
+}
+
+.rightcolumn {
+	float: right;
+	width: 66%
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+.container {
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.col-25 {
+  float: left;
+  width: 150px;
+  margin-top: 6px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.suggestion:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
+}

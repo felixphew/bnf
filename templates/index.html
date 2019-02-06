@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Brave New Faves Bot</title>
+	<link rel="stylesheet" href="public/bnf.css">
+</head>
+
+<body>
+	{{template "header"}}
+	{{- range .}}
+	<div class="row">
+		<div class="suggestion">
+			<div class="leftcolumn">
+				<h3><a href="{{.URL}}?autoplay=0" target="_blank">{{.Artist}} - {{.Title}}</a></h3>
+				<h5>Submitted by {{.UserName}}</h5>
+			</div>
+			<div class="rightcolumn">
+				<p>{{.Description}}</p>
+			</div>
+		</div>
+	</div>
+	{{- end}}
+</body>
+
+</html>

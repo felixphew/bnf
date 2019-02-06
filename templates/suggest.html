@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Brave New Faves Bot</title>
+  <link rel="stylesheet" href="public/bnf.css">
+</head>
+
+<body>
+  {{template "header"}}
+  <div class="container">
+    <form action="/post" method="post">
+      <div class="row">
+        <div class="col-25">
+          <label for="artist">Artist</label>
+        </div>
+        <div class="col-75">
+          <input type="text" id="artist" name="artist" autofocus>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="title">Title</label>
+        </div>
+        <div class="col-75">
+          <input type="text" id="title" name="title">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="description">Description</label>
+        </div>
+        <div class="col-75">
+          <textarea id="description" name="description" style="height:200px"></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="url">Link</label>
+        </div>
+        <div class="col-75">
+          <input type="text" id="url" name="url">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="username">Suggested By</label>
+        </div>
+        <div class="col-75">
+          <input type="text" id="username" name="username">
+        </div>
+      </div>
+      <div class="row">
+        <input type="submit" value="Submit">
+      </div>
+    </form>
+  </div>
