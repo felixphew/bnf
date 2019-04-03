@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"golang.org/x/oauth2"
-
 )
 
 var tmpl *template.Template
@@ -47,12 +46,12 @@ func suggest(w http.ResponseWriter, r *http.Request) {
 }
 
 func post(w http.ResponseWriter, r *http.Request) {
-	s := models.Suggestion{0,
-		r.FormValue("artist"),
-		r.FormValue("title"),
-		r.FormValue("description"),
-		r.FormValue("url"),
-		r.FormValue("username"),
+	s := models.Suggestion{ID: 0,
+		Artist:      r.FormValue("artist"),
+		Title:       r.FormValue("title"),
+		Description: r.FormValue("description"),
+		URL:         r.FormValue("url"),
+		UserName:    r.FormValue("username"),
 	}
 	err := models.AddSuggestion(s)
 	if err != nil {
