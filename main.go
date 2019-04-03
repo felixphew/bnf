@@ -46,7 +46,8 @@ func suggest(w http.ResponseWriter, r *http.Request) {
 }
 
 func post(w http.ResponseWriter, r *http.Request) {
-	s := models.Suggestion{ID: 0,
+	s := models.Suggestion{
+		ID:          0,
 		Artist:      r.FormValue("artist"),
 		Title:       r.FormValue("title"),
 		Description: r.FormValue("description"),
