@@ -10,13 +10,6 @@ import (
 	"time"
 )
 
-const (
-	nick    = "bnflizardwizard"
-	channel = "kathleen_lrr"
-)
-
-var admins = [...]string{"kathleen_lrr", "felixphew", "freshpriceofbeleren", "snackpak_"}
-
 var (
 	ping    = regexp.MustCompile(`^PING :([^\r\n]+)\r\n$`)
 	privmsg = regexp.MustCompile(`^:([^\r\n @]+)![^\r\n @]+@[^\r\n @]+\.tmi\.twitch\.tv PRIVMSG [^\r\n ]+ :([^\r\n]+)\r\n$`)
