@@ -15,7 +15,10 @@ const (
 	channel = "kathleen_lrr"
 )
 
-var admins = [...]string{"kathleen_lrr", "felixphew", "freshpriceofbeleren", "snackpak_"}
+var (
+	admins   = [...]string{"kathleen_lrr", "felixphew", "freshpriceofbeleren", "snackpak_"}
+	plAdmins = [...]string{"pterodactal", "setralynn"}
+)
 
 var (
 	ping    = regexp.MustCompile(`^PING :([^\r\n]+)\r\n$`)
@@ -23,7 +26,7 @@ var (
 	youtube = regexp.MustCompile(`(?:youtube\.com/watch\?v=|youtu\.be/)([A-Za-z0-9_-]{11})`)
 )
 
-var playlist map[string]string
+var playlist = make(map[string]string)
 
 func irc() {
 	for {
@@ -69,7 +72,7 @@ func irc() {
 				err = bot(match[1], match[2], func(msg string) error {
 					_, err := fmt.Fprintf(conn, "PRIVMSG #%s :%s\r\n", channel, msg)
 					if err == nil {
-						log.Printf("<%s> %s", nick, msg)
+						log.Printf("> %s", msg)
 					}
 					return err
 				})
@@ -109,28 +112,32 @@ func bot(user, msg string, send func(string) error) (err error) {
 		if youtube, ok := playlist["youtube"]; ok {
 			err = send("Tonight's playlist: " + youtube)
 		}
-	case user == "pterodactal" && strings.HasPrefix(msg, "!set_spotify"):
-		playlist["spotify"] = msg[len("!set_spotify "):]
-		err = send("Playlist updated!")
-	case user == "snackpak_" && strings.HasPrefix(msg, "!set_google"):
-		playlist["google"] = msg[len("!set_google "):]
-		err = send("Playlist updated!")
-	case user == "setralynn" && strings.HasPrefix(msg, "!set_youtube"):
-		playlist["youtube"] = msg[len("!set_youtube "):]
-		err = send("Playlist updated!")
+	case strings.HasPrefix(msg, "!set_spotify"):
+		if admin(user, true) {
+			playlist["spotify"] = msg[len("!set_spotify "):]
+			err = send("Playlist updated!")
+		}
+	case strings.HasPrefix(msg, "!set_google"):
+		if admin(user, true) {
+			playlist["google"] = msg[len("!set_google "):]
+			err = send("Playlist updated!")
+		}
+	case strings.HasPrefix(msg, "!set_youtube"):
+		if admin(user, true) {
+			playlist["youtube"] = msg[len("!set_youtube "):]
+			err = send("Playlist updated!")
+		}
 	case strings.HasPrefix(msg, "!clear"):
-		for _, admin := range admins {
-			if user == admin {
-				for p := range playlist {
-					delete(playlist, p)
-				}
-				_, err = db.Exec("DELETE FROM submissions;")
-				if err != nil {
-					log.Printf("clearing submissions: %v", err)
-				}
-				err = send("Suggestions and playlists cleared.")
-				break
+		if admin(user, false) {
+			for p := range playlist {
+				delete(playlist, p)
 			}
+			_, err = db.Exec("DELETE FROM submissions;")
+			if err != nil {
+				log.Printf("clearing submissions: %v", err)
+			}
+			err = send("Suggestions and playlists cleared.")
+			break
 		}
 	default:
 		if match := youtube.FindStringSubmatch(msg); match != nil {
@@ -148,4 +155,20 @@ func bot(user, msg string, send func(string) error) (err error) {
 
 	}
 	return
+}
+
+func admin(user string, playlist bool) bool {
+	if playlist {
+		for _, u := range plAdmins {
+			if user == u {
+				return true
+			}
+		}
+	}
+	for _, u := range admins {
+		if user == u {
+			return true
+		}
+	}
+	return false
 }
