@@ -100,6 +100,10 @@ func bot(user, msg string, send func(string) error) (err error) {
 	case strings.Contains(msg, "!wiki"):
 		err = send("Past playlists can be found on the LoadingReadyWiki: " +
 			"https://wiki.loadingreadyrun.com/index.php/Brave_New_Faves")
+	case strings.Contains(msg, "!apple"):
+		if apple, ok := playlist["apple"]; ok {
+			err = send("Tonight's playlist: " + apple)
+		}
 	case strings.Contains(msg, "!spotify"):
 		if spotify, ok := playlist["spotify"]; ok {
 			err = send("Tonight's playlist: " + spotify)
@@ -111,6 +115,11 @@ func bot(user, msg string, send func(string) error) (err error) {
 	case strings.Contains(msg, "!youtube"):
 		if youtube, ok := playlist["youtube"]; ok {
 			err = send("Tonight's playlist: " + youtube)
+		}
+	case strings.HasPrefix(msg, "!set_apple"):
+		if admin(user, true) {
+			playlist["apple"] = msg[len("!set_apple "):]
+			err = send("Playlist updated!")
 		}
 	case strings.HasPrefix(msg, "!set_spotify"):
 		if admin(user, true) {
