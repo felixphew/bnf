@@ -23,7 +23,7 @@ var (
 var (
 	ping    = regexp.MustCompile(`^PING :([^\r\n]+)\r\n$`)
 	privmsg = regexp.MustCompile(`^:([^\r\n @]+)![^\r\n @]+@[^\r\n @]+\.tmi\.twitch\.tv PRIVMSG [^\r\n ]+ :([^\r\n]+)\r\n$`)
-	youtube = regexp.MustCompile(`(?:youtube\.com/watch\?v=|youtu\.be/)([A-Za-z0-9_-]{11})`)
+	link    = regexp.MustCompile(`http[s?]:\/\/[(youtube.com\/watch\?v=|youtu.be\/|bandcamp.com\/)\S]+`)
 )
 
 var playlist = make(map[string]string)
@@ -149,13 +149,13 @@ func bot(user, msg string, send func(string) error) (err error) {
 			break
 		}
 	default:
-		if match := youtube.FindStringSubmatch(msg); match != nil {
+		if match := link.FindStringmsg); match != "" {
 			if user == "bravenewfavesbot" {
-				log.Printf("ignored link: %s", match[1])
+				log.Printf("ignored link: %s", match)
 			} else {
-				log.Printf("found link: %s", match[1])
+				log.Printf("found link: %s", match)
 				_, err := db.Exec("INSERT INTO submissions(user, videoid, message) VALUES(?, ?, ?);",
-					user, match[1], msg)
+					user, match, msg)
 				if err != nil {
 					log.Printf("adding submission: %v", err)
 				}

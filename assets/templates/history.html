@@ -13,7 +13,7 @@
 {{- range .}}
     <div class="suggestion">
         <p>{{.Message}}</p>
-        <span>Suggested by <em>{{.User}}</em> on {{.Date}} // <a href="https://youtube.com/watch?v={{.VideoID}}" target="_blank"><em>Play</em></a></span>
+        <span>Suggested by <em>{{.User}}</em> on {{.Date}} // <a href="{{.VideoID}}" target="_blank"><em>Play</em></a></span>
     </div>
 {{- end}}
 </body>
