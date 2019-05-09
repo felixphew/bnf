@@ -1,6 +1,6 @@
 body {
 	font: 300 18px/calc(7 / 6) Helvetica, Arial, sans-serif;
-	margin: 80px 8px 8px;
+	margin: 120px 8px 8px;
 }
 
 header {
@@ -61,4 +61,33 @@ header > h2 > .version {
 .suggestion > span a {
 	text-decoration: inherit;
 	color: inherit;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: black;
+}
+
+li {
+	float: left;
+	border-right: 1px solid #bbb;
+}
+
+li:last-child {
+	border-right: none;
+}
+
+li a {
+  display: block;
+	color: white;
+  text-align: center;
+  padding: 10px 16px 5px;
+  text-decoration: none;
+}
+
+li a:hover {
+	background-color: #1c1c1c;
 }
