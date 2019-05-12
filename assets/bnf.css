@@ -40,6 +40,16 @@ header > h2 > .version {
 	color: white;
 }
 
+header > button {
+	float: right;
+	margin: 14px 0;
+	border: none;
+	background: none;
+	color: inherit;
+	font: inherit;
+	font-size: 24px;
+}
+
 .suggestion {
 	margin: 18px 0;
 }
