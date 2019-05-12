@@ -94,11 +94,11 @@ func bot(user, msg string, send func(string) error) (err error) {
 			"FreshPrinceOfBeleren, SnackPak_ And Others. I Collect Music Suggestions For Kathleen. " +
 			"https://bnf.ffetc.net")
 	case strings.Contains(msg, "!howto"):
-		err = send("To request a song for Brave New Faves, wait until Kathleen asks for suggestions during the last " +
-			"song, then drop a YouTube link in chat, along with the artist's name, song title, and a brief " +
-			"description hyping your request.")
+		err = send("Here Are My Instructions: to request a song, wait until Kathleen asks for suggestions " +
+			"(just before the last song on the playlist), then drop a YouTube or Bandcamp link in chat, " +
+			"along with the artist's name, song title, and a brief description hyping your request.")
 	case strings.Contains(msg, "!wiki"):
-		err = send("Past playlists can be found on the LoadingReadyWiki: " +
+		err = send("Past Playlists Can Be Found On The LoadingReadyWiki: " +
 			"https://wiki.loadingreadyrun.com/index.php/Brave_New_Faves")
 	case strings.Contains(msg, "!apple"):
 		if apple, ok := playlist["apple"]; ok {
@@ -106,35 +106,35 @@ func bot(user, msg string, send func(string) error) (err error) {
 		}
 	case strings.Contains(msg, "!spotify"):
 		if spotify, ok := playlist["spotify"]; ok {
-			err = send("Tonight's playlist: " + spotify)
+			err = send("Tonight's Playlist: " + spotify)
 		}
 	case strings.Contains(msg, "!google"):
 		if google, ok := playlist["google"]; ok {
-			err = send("Tonight's playlist: " + google)
+			err = send("Tonight's Playlist: " + google)
 		}
 	case strings.Contains(msg, "!youtube"):
 		if youtube, ok := playlist["youtube"]; ok {
-			err = send("Tonight's playlist: " + youtube)
+			err = send("Tonight's Playlist: " + youtube)
 		}
 	case strings.HasPrefix(msg, "!set_apple"):
 		if admin(user, true) {
 			playlist["apple"] = msg[len("!set_apple "):]
-			err = send("Playlist updated!")
+			err = send("Playlist Updated!")
 		}
 	case strings.HasPrefix(msg, "!set_spotify"):
 		if admin(user, true) {
 			playlist["spotify"] = msg[len("!set_spotify "):]
-			err = send("Playlist updated!")
+			err = send("Playlist Updated!")
 		}
 	case strings.HasPrefix(msg, "!set_google"):
 		if admin(user, true) {
 			playlist["google"] = msg[len("!set_google "):]
-			err = send("Playlist updated!")
+			err = send("Playlist Updated!")
 		}
 	case strings.HasPrefix(msg, "!set_youtube"):
 		if admin(user, true) {
 			playlist["youtube"] = msg[len("!set_youtube "):]
-			err = send("Playlist updated!")
+			err = send("Playlist Updated!")
 		}
 	case strings.HasPrefix(msg, "!clear"):
 		if admin(user, false) {
@@ -143,9 +143,9 @@ func bot(user, msg string, send func(string) error) (err error) {
 			}
 			_, err = db.Exec("DELETE FROM submissions;")
 			if err != nil {
-				log.Printf("clearing submissions: %v", err)
+				log.Printf("Clearing Submissions: %v", err)
 			}
-			err = send("Suggestions and playlists cleared.")
+			err = send("Suggestions And Playlists Cleared.")
 			break
 		}
 	default:
