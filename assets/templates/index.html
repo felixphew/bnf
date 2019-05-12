@@ -13,7 +13,7 @@
 		{{- range .}}
 		<div class="suggestion">
 			<p>{{.Message}}</p>
-			<span>Suggested by <em>{{.User}}</em> // <a href="{{.VideoID}}" target="_blank"><em>Play</em></a> // <a href="/play?id={{.ID}}"><em>Remove</em> and add to played</a> // <a href="/delete?id={{.ID}}"><em>Remove</em></a></span>
+			<span>Suggested by <em>{{.User}}</em> // <a href="{{.Link}}" target="_blank"><em>Play</em></a> // <a href="/play?id={{.ID}}"><em>Remove</em> and add to played</a> // <a href="/delete?id={{.ID}}"><em>Remove</em></a></span>
 		</div>
 		{{- end}}
 	</body>

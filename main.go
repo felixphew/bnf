@@ -14,7 +14,7 @@ var tmpl = template.Must(template.ParseGlob("assets/templates/*.html"))
 var db *sql.DB
 
 func index(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT videoid, message, user, id FROM submissions;")
+	rows, err := db.Query("SELECT link, message, user, id FROM submissions;")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -22,13 +22,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 
 	type sug struct {
-		VideoID, Message, User string
-		ID                     int
+		Link, Message, User string
+		ID                  int
 	}
 	sugs := []sug{}
 	for rows.Next() {
 		var s sug
-		if err := rows.Scan(&s.VideoID, &s.Message, &s.User, &s.ID); err != nil {
+		if err := rows.Scan(&s.Link, &s.Message, &s.User, &s.ID); err != nil {
 			log.Print(err)
 		}
 		sugs = append(sugs, s)
@@ -55,7 +55,7 @@ func play(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	_, err = db.Exec(`INSERT INTO history(user, videoid, message) SELECT user, videoid, message FROM submissions WHERE id = ?1;
+	_, err = db.Exec(`INSERT INTO history(user, link, message) SELECT user, link, message FROM submissions WHERE id = ?1;
 DELETE FROM submissions WHERE id = ?1`, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -84,7 +84,7 @@ func del(w http.ResponseWriter, r *http.Request) {
 }
 
 func history(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT videoid, message, user, date, id FROM history;")
+	rows, err := db.Query("SELECT link, message, user, date, id FROM history;")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -92,14 +92,14 @@ func history(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 
 	type sug struct {
-		VideoID, Message, User string
-		Date                   string
-		ID                     int
+		Link, Message, User string
+		Date                string
+		ID                  int
 	}
 	sugs := []sug{}
 	for rows.Next() {
 		var s sug
-		if err := rows.Scan(&s.VideoID, &s.Message, &s.User, &s.Date, &s.ID); err != nil {
+		if err := rows.Scan(&s.Link, &s.Message, &s.User, &s.Date, &s.ID); err != nil {
 			log.Print(err)
 		}
 		sugs = append(sugs, s)
@@ -122,8 +122,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS submissions(id INTEGER PRIMARY KEY, user TEXT, videoid TEXT, message TEXT);
-CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY, user TEXT, videoid TEXT, message TEXT, date DATE DEFAULT CURRENT_DATE);
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS submissions(id INTEGER PRIMARY KEY, user TEXT, link TEXT, message TEXT);
+CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY, user TEXT, link TEXT, message TEXT, date DATE DEFAULT CURRENT_DATE);
 CREATE TABLE IF NOT EXISTS auth(username TEXT, password TEXT);`)
 	if err != nil {
 		log.Fatal(err)
