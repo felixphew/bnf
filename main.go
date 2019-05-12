@@ -2,11 +2,12 @@ package main
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var tmpl = template.Must(template.ParseGlob("assets/templates/*.html"))
@@ -115,6 +116,15 @@ func history(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func login(w http.ResponseWriter, r *http.Request) {
+	if !auth(r) {
+		w.Header().Set("WWW-Authenticate", "Basic realm=bnf")
+		http.Error(w, "Invalid username or password", http.StatusUnauthorized)
+		return
+	}
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
 func main() {
 	var err error
 	db, err = sql.Open("sqlite3", "bnf.db")
@@ -135,6 +145,7 @@ CREATE TABLE IF NOT EXISTS auth(username TEXT, password TEXT);`)
 	http.HandleFunc("/play", play)
 	http.HandleFunc("/delete", del)
 	http.HandleFunc("/history", history)
+	http.HandleFunc("/login", login)
 	http.Handle("/bnf.css", http.FileServer(http.Dir("assets")))
 
 	log.Fatal(http.ListenAndServe("127.0.0.1:8001", nil))
