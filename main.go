@@ -2,11 +2,12 @@ package main
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var tmpl = template.Must(template.ParseGlob("assets/templates/*.html"))

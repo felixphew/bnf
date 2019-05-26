@@ -163,7 +163,7 @@ func bot(user, msg string, send func(string) error) (err error) {
 		}
 
 	}
-	return
+	return err
 }
 
 func admin(user string, playlist bool) bool {
