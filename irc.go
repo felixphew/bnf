@@ -97,6 +97,9 @@ func bot(user, msg string, send func(string) error) (err error) {
 		err = send("Here Are My Instructions: to request a song, wait until Kathleen asks for suggestions " +
 			"(just before the last song on the playlist), then drop a YouTube or Bandcamp link in chat, " +
 			"along with the artist's name, song title, and a brief description hyping your request.")
+	case strings.Contains(msg, "!playlist"):
+		err = send("Use commands for individual services. !apple for Apple Music," +
+			"!spotify for Spotify, and !youtube for Youtube")
 	case strings.Contains(msg, "!wiki"):
 		err = send("Past Playlists Can Be Found On The LoadingReadyWiki: " +
 			"https://wiki.loadingreadyrun.com/index.php/Brave_New_Faves")
