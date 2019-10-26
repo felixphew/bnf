@@ -1,10 +1,11 @@
-package main
+package bnf
 
 import (
 	"bufio"
 	"crypto/tls"
 	"fmt"
 	"log"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -36,7 +37,7 @@ func irc() {
 			time.Sleep(10 * time.Second)
 			continue
 		}
-		_, err = fmt.Fprintf(conn, "PASS oauth:%s\r\n", twitchToken)
+		_, err = fmt.Fprintf(conn, "PASS oauth:%s\r\n", os.Getenv("BNF_TOKEN"))
 		if err != nil {
 			log.Printf("while authenticating: %v", err)
 			continue
@@ -180,4 +181,8 @@ func admin(user string, playlist bool) bool {
 		}
 	}
 	return false
+}
+
+func init() {
+	go irc()
 }

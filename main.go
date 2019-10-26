@@ -1,18 +1,33 @@
-package main
+package bnf
 
 import (
 	"database/sql"
 	"html/template"
 	"log"
 	"net/http"
+	"path/filepath"
+	"runtime"
 	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var tmpl = template.Must(template.ParseGlob("assets/templates/*.html"))
+var Handler = http.NewServeMux()
+
+var (
+	dir = getDir()
+	tmpl = template.Must(template.ParseGlob(filepath.Join(dir, "assets/templates/*.html")))
+)
 
 var db *sql.DB
+
+func getDir() string {
+        _, file, _, ok := runtime.Caller(0)
+        if !ok {
+                log.Fatal("Could not recover file path")
+        }
+	return filepath.Dir(file)
+}
 
 func index(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query("SELECT link, message, user, id FROM submissions;")
@@ -116,9 +131,9 @@ func history(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func main() {
+func init() {
 	var err error
-	db, err = sql.Open("sqlite3", "bnf.db")
+	db, err = sql.Open("sqlite3", filepath.Join(dir, "bnf.db"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -130,13 +145,9 @@ CREATE TABLE IF NOT EXISTS auth(username TEXT, password TEXT);`)
 		log.Fatal(err)
 	}
 
-	go irc()
-
-	http.HandleFunc("/", index)
-	http.HandleFunc("/play", play)
-	http.HandleFunc("/delete", del)
-	http.HandleFunc("/history", history)
-	http.Handle("/bnf.css", http.FileServer(http.Dir("assets")))
-
-	log.Fatal(http.ListenAndServe("127.0.0.1:8001", nil))
+	Handler.HandleFunc("/", index)
+	Handler.HandleFunc("/play", play)
+	Handler.HandleFunc("/delete", del)
+	Handler.HandleFunc("/history", history)
+	Handler.Handle("/bnf.css", http.FileServer(http.Dir(filepath.Join(dir, "assets"))))
 }
