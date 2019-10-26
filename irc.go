@@ -24,7 +24,7 @@ var (
 var (
 	ping    = regexp.MustCompile(`^PING :([^\r\n]+)\r\n$`)
 	privmsg = regexp.MustCompile(`^:([^\r\n @]+)![^\r\n @]+@[^\r\n @]+\.tmi\.twitch\.tv PRIVMSG [^\r\n ]+ :([^\r\n]+)\r\n$`)
-	link    = regexp.MustCompile(`https?://(?:[a-z0-9-]+\.bandcamp\.com/track/[a-z0-9-]+|(?:(?:www\.)?youtube\.com/watch\?v=|youtu.be/)[A-Za-z0-9_-]{11})`)
+	link    = regexp.MustCompile(`https?://(?:[a-z0-9-]+\.bandcamp\.com/track/[a-z0-9-]+|(?:(?:www\.)?youtube\.com/watch\?v=|youtu.be/)[A-Za-z0-9_-]{11}|soundcloud.com/[a-z0-9-]+/[a-z0-9-]+)`)
 )
 
 var playlist = make(map[string]string)
