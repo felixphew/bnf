@@ -117,6 +117,8 @@ func bot(user, msg string, send func(string) error) (err error) {
 		if youtube, ok := playlist["youtube"]; ok {
 			err = send("Tonight's Playlist: " + youtube)
 		}
+	case strings.Contains(msg, "!playlist"):
+		err = send("Which Playlist Would You Like? (!spotify, !apple, !google, !youtube)")
 	case strings.HasPrefix(msg, "!set_apple"):
 		if admin(user, true) {
 			playlist["apple"] = msg[len("!set_apple "):]
