@@ -56,8 +56,8 @@ func play(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	_, err = db.Exec(`INSERT INTO history(user, link, message) SELECT user, link, message FROM submissions WHERE id = ?1;
-DELETE FROM submissions WHERE id = ?1`, id)
+	_, err = db.Exec(`INSERT INTO history(user, link, message) SELECT user, link, message FROM submissions WHERE id = ?;
+DELETE FROM submissions WHERE id = ?;`, id, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
