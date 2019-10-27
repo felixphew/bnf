@@ -2,12 +2,15 @@ package bnf
 
 import (
 	"database/sql"
+	"encoding/csv"
 	"html/template"
 	"log"
 	"net/http"
+	"path"
 	"path/filepath"
 	"runtime"
 	"strconv"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -16,7 +19,7 @@ var Handler = http.NewServeMux()
 
 var (
 	dir = getDir()
-	tmpl = template.Must(template.ParseGlob(filepath.Join(dir, "assets/templates/*.html")))
+	tmpl = template.Must(template.New("tmpl").Funcs(template.FuncMap{"timeformat": func(layout string, t time.Time) string {return t.Format(layout)}}).ParseGlob(filepath.Join(dir, "assets/templates/*.html")))
 )
 
 var db *sql.DB
@@ -131,6 +134,65 @@ func history(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func historyDownload(w http.ResponseWriter, r *http.Request) {
+	rows, err := db.Query("SELECT DISTINCT date FROM history ORDER BY id;")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	dates := make([]time.Time, 0)
+	for rows.Next() {
+		var date time.Time
+		if err := rows.Scan(&date); err != nil {
+			log.Print(err)
+			continue
+		}
+		dates = append(dates, date)
+	}
+	if err := rows.Err(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.ExecuteTemplate(w, "download.html", dates)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func historyDownloadCSV(w http.ResponseWriter, r *http.Request) {
+	rows, err := db.Query("SELECT link, user, message FROM history WHERE date = ?;", path.Base(r.URL.Path))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	records := make([][]string, 0)
+	for rows.Next() {
+		var record = make([]string, 3)
+		if err := rows.Scan(&record[0], &record[1], &record[2]); err != nil {
+			log.Print(err)
+			continue
+		}
+		records = append(records, record)
+	}
+	if err = rows.Err(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Disposition", "attachment; filename=\"history.csv\"")
+	if err = csv.NewWriter(w).WriteAll(records); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 func init() {
 	var err error
 	db, err = sql.Open("sqlite3", filepath.Join(dir, "bnf.db"))
@@ -149,5 +211,7 @@ CREATE TABLE IF NOT EXISTS auth(username TEXT, password TEXT);`)
 	Handler.HandleFunc("/play", play)
 	Handler.HandleFunc("/delete", del)
 	Handler.HandleFunc("/history", history)
+	Handler.HandleFunc("/history/download", historyDownload)
+	Handler.HandleFunc("/history/download/", historyDownloadCSV)
 	Handler.Handle("/bnf.css", http.FileServer(http.Dir(filepath.Join(dir, "assets"))))
 }
