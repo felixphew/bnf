@@ -119,22 +119,22 @@ func bot(user, msg string, send func(string) error) (err error) {
 		}
 	case strings.Contains(msg, "!playlist"):
 		err = send("Which Playlist Would You Like? (!spotify, !apple, !google, !youtube)")
-	case strings.HasPrefix(msg, "!set_apple"):
+	case strings.HasPrefix(msg, "!set_apple "):
 		if admin(user, true) {
 			playlist["apple"] = msg[len("!set_apple "):]
 			err = send("Playlist Updated!")
 		}
-	case strings.HasPrefix(msg, "!set_spotify"):
+	case strings.HasPrefix(msg, "!set_spotify "):
 		if admin(user, true) {
 			playlist["spotify"] = msg[len("!set_spotify "):]
 			err = send("Playlist Updated!")
 		}
-	case strings.HasPrefix(msg, "!set_google"):
+	case strings.HasPrefix(msg, "!set_google "):
 		if admin(user, true) {
 			playlist["google"] = msg[len("!set_google "):]
 			err = send("Playlist Updated!")
 		}
-	case strings.HasPrefix(msg, "!set_youtube"):
+	case strings.HasPrefix(msg, "!set_youtube "):
 		if admin(user, true) {
 			playlist["youtube"] = msg[len("!set_youtube "):]
 			err = send("Playlist Updated!")
