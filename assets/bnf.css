@@ -72,3 +72,17 @@ header > button {
 	text-decoration: inherit;
 	color: inherit;
 }
+
+.bookmark {
+	border-left: 3px solid #DAAD00;
+	padding-left: 6px;
+}
+
+.random {
+	border-left: 3px solid #1CC2E8;
+	padding-left: 6px;
+}
+
+.bookmark.random {
+	border-image: linear-gradient(#DAAD00, #1CC2E8) 0 3;
+}
