@@ -12,10 +12,11 @@
 			<h2>Pirate Radio Bot <span class="version">v0.3.0</span></h2>
 		</header>
 		{{- range .}}
-		<div class="suggestion" onclick="this.classList.toggle('bookmark');">
+		<div id="suggestion-{{.ID}}" class="suggestion" onclick="sessionStorage[this.id]=this.classList.toggle('bookmark');">
 			<p>{{.Message}}</p>
 			<span>Suggested by <em>{{.User}}</em> // <a href="{{.Link}}" target="_blank"><em>Play</em></a> // <a href="/play?id={{.ID}}"><em>Remove</em> and add to played</a> // <a href="/delete?id={{.ID}}"><em>Remove</em></a></span>
 		</div>
 		{{- end}}
+		<script>Object.keys(sessionStorage).forEach(key => {if (JSON.parse(sessionStorage.getItem(key))) document.getElementById(key).classList.add("bookmark")});</script>
 	</body>
 </html>
