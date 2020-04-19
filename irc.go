@@ -27,7 +27,10 @@ var (
 	link    = regexp.MustCompile(`https?://(?:[a-z0-9-]+\.bandcamp\.com/track/[a-z0-9-]+|(?:(?:www\.)?youtube\.com/watch\?v=|youtu.be/)[A-Za-z0-9_-]{11}|soundcloud.com/[a-z0-9-]+/[a-z0-9-]+)`)
 )
 
-var playlist = make(map[string]string)
+var (
+	playlistApple = "https://music.apple.com/playlist/brave-new-faves-2020/pl.u-gxblYV4sKzevo"
+	playlist = make(map[string]string)
+)
 
 func irc() {
 	for {
@@ -96,17 +99,13 @@ func bot(user, msg string, send func(string) error) (err error) {
 			"https://bnf.ffetc.net")
 	case strings.Contains(msg, "!howto"):
 		err = send("Here Are My Instructions: to request a song, wait until Kathleen asks for suggestions " +
-			"(just before the last song on the playlist), then drop a YouTube or Bandcamp link in chat, " +
+			"(just before the last song on the playlist), then drop a YouTube, Bandcamp or Soundcloud link in chat, " +
 			"along with the artist's name, song title, and a brief description hyping your request.")
 	case strings.Contains(msg, "!wiki"):
 		err = send("Past Playlists Can Be Found On The LoadingReadyWiki: " +
 			"https://wiki.loadingreadyrun.com/index.php/Brave_New_Faves")
-	case strings.Contains(msg, "!poll"):
-		err = send("Do You Have Opinions On Music? https://forms.gle/ZhHJSwp7XtiXdweL6")
 	case strings.Contains(msg, "!apple"):
-		if apple, ok := playlist["apple"]; ok {
-			err = send("Tonight's playlist: " + apple)
-		}
+		err = send("Tonight's playlist: " + playlistApple)
 	case strings.Contains(msg, "!spotify"):
 		if spotify, ok := playlist["spotify"]; ok {
 			err = send("Tonight's Playlist: " + spotify)
@@ -123,7 +122,7 @@ func bot(user, msg string, send func(string) error) (err error) {
 		err = send("Which Playlist Would You Like? (!spotify, !apple, !google, !youtube)")
 	case strings.HasPrefix(msg, "!set_apple "):
 		if admin(user, true) {
-			playlist["apple"] = msg[len("!set_apple "):]
+			playlistApple = msg[len("!set_apple "):]
 			err = send("Playlist Updated!")
 		}
 	case strings.HasPrefix(msg, "!set_spotify "):
