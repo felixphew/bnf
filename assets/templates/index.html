@@ -14,7 +14,7 @@
 		{{- range .}}
 		<div id="suggestion-{{.ID}}" class="suggestion" onclick="sessionStorage[this.id]=this.classList.toggle('bookmark');">
 			<p>{{.Message}}</p>
-			<span>Suggested by <em>{{.User}}</em> // <a href="{{.Link}}" target="_blank"><em>Play</em></a> // <a href="/play?id={{.ID}}"><em>Remove</em> and add to played</a> // <a href="/delete?id={{.ID}}"><em>Remove</em></a> // <a href="/purge?id={{.ID}}"><em>Remove to this point</em></span>
+			<span>Suggested by <em>{{.User}}</em> // <a href="{{.Link}}" target="_blank"><em>Play</em></a> // <a href="/play?id={{.ID}}"><em>Remove</em> and add to played</a> // <a href="/delete?id={{.ID}}"><em>Remove</em></a> // <a href="/deleteprev?id={{.ID}}"><em>Remove earlier</em></span>
 		</div>
 		{{- end}}
 		<script>Object.keys(sessionStorage).forEach(key => {if (JSON.parse(sessionStorage.getItem(key))) document.getElementById(key).classList.add("bookmark")});</script>

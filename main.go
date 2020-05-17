@@ -102,7 +102,7 @@ func del(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func purge(w http.ResponseWriter, r *http.Request) {
+func delPrev(w http.ResponseWriter, r *http.Request) {
 	if !auth(r) {
 		w.Header().Set("WWW-Authenticate", "Basic realm=bnf")
 		http.Error(w, "Please login to delete suggestions", http.StatusUnauthorized)
@@ -113,7 +113,7 @@ func purge(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	_, err = db.Exec("DELETE FROM submissions WHERE id <= ?;", id)
+	_, err = db.Exec("DELETE FROM submissions WHERE id < ?;", id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -229,7 +229,7 @@ CREATE TABLE IF NOT EXISTS auth(username TEXT, password TEXT);`)
 	Handler.HandleFunc("/", index)
 	Handler.HandleFunc("/play", play)
 	Handler.HandleFunc("/delete", del)
-	Handler.HandleFunc("/purge", purge)
+	Handler.HandleFunc("/deleteprev", delPrev)
 	Handler.HandleFunc("/history", history)
 	Handler.HandleFunc("/history/download", historyDownload)
 	Handler.HandleFunc("/history/download/", historyDownloadCSV)
