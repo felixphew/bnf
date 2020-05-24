@@ -18,7 +18,7 @@ const (
 
 var (
 	admins   = [...]string{"kathleen_lrr", "felixphew", "freshpriceofbeleren", "pterodactal"}
-	plAdmins = [...]string{"zaxusemk", "setralynn"}
+	plAdmins = [...]string{"setralynn"}
 )
 
 var (
@@ -110,16 +110,12 @@ func bot(user, msg string, send func(string) error) (err error) {
 		if spotify, ok := playlist["spotify"]; ok {
 			err = send("Tonight's Playlist: " + spotify)
 		}
-	case strings.Contains(msg, "!google"):
-		if google, ok := playlist["google"]; ok {
-			err = send("Tonight's Playlist: " + google)
-		}
 	case strings.Contains(msg, "!youtube"):
 		if youtube, ok := playlist["youtube"]; ok {
 			err = send("Tonight's Playlist: " + youtube)
 		}
 	case strings.Contains(msg, "!playlist"):
-		err = send("Which Playlist Would You Like? (!spotify, !apple, !google, !youtube)")
+		err = send("Which Playlist Would You Like? (!spotify, !apple, !youtube)")
 	case strings.HasPrefix(msg, "!set_apple "):
 		if admin(user, true) {
 			playlistApple = msg[len("!set_apple "):]
@@ -128,11 +124,6 @@ func bot(user, msg string, send func(string) error) (err error) {
 	case strings.HasPrefix(msg, "!set_spotify "):
 		if admin(user, true) {
 			playlist["spotify"] = msg[len("!set_spotify "):]
-			err = send("Playlist Updated!")
-		}
-	case strings.HasPrefix(msg, "!set_google "):
-		if admin(user, true) {
-			playlist["google"] = msg[len("!set_google "):]
 			err = send("Playlist Updated!")
 		}
 	case strings.HasPrefix(msg, "!set_youtube "):
