@@ -105,7 +105,7 @@ func bot(user, msg string, send func(string) error) (err error) {
 		err = send("Past Playlists Can Be Found On The LoadingReadyWiki: " +
 			"https://wiki.loadingreadyrun.com/index.php/Brave_New_Faves")
 	case strings.Contains(msg, "!apple"):
-		err = send("Tonight's playlist: " + playlistApple)
+		err = send("2020 playlist: " + playlistApple)
 	case strings.Contains(msg, "!spotify"):
 		if spotify, ok := playlist["spotify"]; ok {
 			err = send("Tonight's Playlist: " + spotify)
