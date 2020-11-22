@@ -17,7 +17,7 @@ const (
 )
 
 var (
-	admins   = [...]string{"kathleen_lrr", "felixphew", "freshpriceofbeleren", "pterodactal"}
+	admins   = [...]string{"kathleen_lrr", "felixphew", "freshpriceofbeleren", "rubikdarkwill"}
 	plAdmins = [...]string{"zaxusemk", "setralynn"}
 )
 
