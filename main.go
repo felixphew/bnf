@@ -64,7 +64,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func play(w http.ResponseWriter, r *http.Request) {
-	if !auth(r) {
+	if !basicAuth(r) {
 		w.Header().Set("WWW-Authenticate", "Basic realm=bnf")
 		http.Error(w, "Please login to mark suggestions as played", http.StatusUnauthorized)
 		return
@@ -84,7 +84,7 @@ DELETE FROM submissions WHERE id = ?;`, id, id)
 }
 
 func del(w http.ResponseWriter, r *http.Request) {
-	if !auth(r) {
+	if !basicAuth(r) {
 		w.Header().Set("WWW-Authenticate", "Basic realm=bnf")
 		http.Error(w, "Please login to delete suggestions", http.StatusUnauthorized)
 		return
@@ -103,7 +103,7 @@ func del(w http.ResponseWriter, r *http.Request) {
 }
 
 func delPrev(w http.ResponseWriter, r *http.Request) {
-	if !auth(r) {
+	if !basicAuth(r) {
 		w.Header().Set("WWW-Authenticate", "Basic realm=bnf")
 		http.Error(w, "Please login to delete suggestions", http.StatusUnauthorized)
 		return
