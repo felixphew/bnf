@@ -3,6 +3,7 @@ package bnf
 import (
 	"bufio"
 	"crypto/tls"
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
@@ -20,12 +21,10 @@ var (
 	ping    = regexp.MustCompile(`^PING :([^\r\n]+)\r\n$`)
 	privmsg = regexp.MustCompile(`^:([^\r\n @]+)![^\r\n @]+@[^\r\n @]+\.tmi\.twitch\.tv PRIVMSG [^\r\n ]+ :([^\r\n]+)\r\n$`)
 	link    = regexp.MustCompile(`https?://(?:[a-z0-9-]+\.bandcamp\.com/track/[a-z0-9-]+|(?:(?:www\.)?youtube\.com/watch\?v=|youtu.be/)[A-Za-z0-9_-]{11}|soundcloud.com/[a-z0-9-]+/[a-z0-9-]+)`)
-)
 
-var (
-	playlistApple = "https://music.apple.com/playlist/brave-new-faves-2020/pl.u-gxblYV4sKzevo"
-	playlist      = make(map[string]string)
-	theme         = ""
+	playlists       = "(apple|spotify|google|youtube)"
+	playlistCmds    = regexp.MustCompile("!" + playlists)
+	playlistSetCmds = regexp.MustCompile("^!set_" + playlists + " (.*)")
 )
 
 func irc() {
@@ -102,53 +101,30 @@ func bot(user, msg string, send func(string) error) (err error) {
 			"https://wiki.loadingreadyrun.com/index.php/Brave_New_Faves")
 	case strings.Contains(msg, "!vote") || strings.Contains(msg, "!poll"):
 		err = send("Vote Lizard! Vote Kathleen! Vote in the Listeners Poll! https://bit.ly/2Wb7Udu")
-	case strings.Contains(msg, "!apple"):
-		err = send("Tonight's playlist: " + playlistApple)
-	case strings.Contains(msg, "!spotify"):
-		if spotify, ok := playlist["spotify"]; ok {
-			err = send("Tonight's Playlist: " + spotify)
-		}
-	case strings.Contains(msg, "!google"):
-		if google, ok := playlist["google"]; ok {
-			err = send("Tonight's Playlist: " + google)
-		}
-	case strings.Contains(msg, "!youtube"):
-		if youtube, ok := playlist["youtube"]; ok {
-			err = send("Tonight's Playlist: " + youtube)
+	case playlistCmds.MatchString(msg):
+		match := playlistCmds.FindStringSubmatch(msg)
+		if playlist := getPlaylist(match[1]); playlist != nil {
+			err = send("Tonight's Playlist: " + *playlist)
 		}
 	case strings.Contains(msg, "!theme"):
-		if theme != "" {
-			err = send("Current Suggestion Theme: " + theme)
+		if theme := getPlaylist("theme"); theme != nil {
+			err = send("Current Suggestion Theme: " + *theme)
 		}
 	case strings.Contains(msg, "!playlist"):
 		err = send("Which Playlist Would You Like? (!spotify, !apple, !google, !youtube)")
-	case strings.HasPrefix(msg, "!set_apple "):
-		if admin(user, true) {
-			playlistApple = msg[len("!set_apple "):]
+	case playlistSetCmds.MatchString(msg) && admin(user, true):
+		match := playlistSetCmds.FindStringSubmatch(msg)
+		err = setPlaylist(match[1], match[2])
+		if err == nil {
 			err = send("Playlist Updated!")
 		}
-	case strings.HasPrefix(msg, "!set_spotify "):
-		if admin(user, true) {
-			playlist["spotify"] = msg[len("!set_spotify "):]
-			err = send("Playlist Updated!")
-		}
-	case strings.HasPrefix(msg, "!set_google "):
-		if admin(user, true) {
-			playlist["google"] = msg[len("!set_google "):]
-			err = send("Playlist Updated!")
-		}
-	case strings.HasPrefix(msg, "!set_youtube "):
-		if admin(user, true) {
-			playlist["youtube"] = msg[len("!set_youtube "):]
-			err = send("Playlist Updated!")
-		}
-	case strings.HasPrefix(msg, "!set_theme "):
-		if admin(user, false) {
-			theme = msg[len("!set_theme "):]
+	case strings.HasPrefix(msg, "!set_theme ") && admin(user, true):
+		err = setPlaylist("theme", msg[len("!set_theme "):])
+		if err == nil {
 			err = send("Theme Updated!")
 		}
 	case strings.HasPrefix(msg, "!add_user "):
-		if admin(user, true) {
+		if admin(user, false) {
 			newUser := strings.ToLower(strings.TrimSpace(msg[len("!add_user "):]))
 			err = twitchAuthzInsert(newUser)
 			if err != nil {
@@ -158,7 +134,7 @@ func bot(user, msg string, send func(string) error) (err error) {
 			}
 		}
 	case strings.HasPrefix(msg, "!remove_user "):
-		if admin(user, true) {
+		if admin(user, false) {
 			newUser := strings.ToLower(strings.TrimSpace(msg[len("!remove_user "):]))
 			err = twitchAuthzDelete(newUser)
 			if err != nil {
@@ -169,11 +145,7 @@ func bot(user, msg string, send func(string) error) (err error) {
 		}
 	case strings.HasPrefix(msg, "!clear"):
 		if admin(user, false) {
-			for p := range playlist {
-				delete(playlist, p)
-			}
-			theme = ""
-			_, err = db.Exec("DELETE FROM submissions;")
+			_, err = db.Exec("DELETE FROM submissions; DELETE FROM playlists WHERE name != \"apple\";")
 			if err != nil {
 				log.Printf("Clearing Submissions: %v", err)
 			}
@@ -195,6 +167,20 @@ func bot(user, msg string, send func(string) error) (err error) {
 		}
 
 	}
+	return err
+}
+
+func getPlaylist(name string) (value *string) {
+	err := db.QueryRow("SELECT value FROM playlists WHERE name = ?", name).Scan(&value)
+	if err != nil && err != sql.ErrNoRows {
+		log.Printf("reading database: %v", err)
+	}
+	return
+}
+
+func setPlaylist(name string, value string) error {
+	_, err := db.Exec("INSERT INTO playlists(name, value) VALUES(?, ?) "+
+		"ON CONFLICT(name) DO UPDATE SET value=excluded.value;", name, value)
 	return err
 }
 
