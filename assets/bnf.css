@@ -35,7 +35,7 @@ header > h2 {
 	color: #1CC2E8;
 }
 
-header > h2 > .version {
+header > h1 > .subtitle, header > h2 > .version {
 	text-transform: none;
 	color: white;
 }
