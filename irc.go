@@ -14,7 +14,7 @@ import (
 
 const (
 	nick    = "bnflizardwizard"
-	channel = "kathleen_lrr"
+	channel = "bravenewfaves"
 )
 
 var (
@@ -25,6 +25,8 @@ var (
 	playlists       = "(apple|spotify|google|youtube)"
 	playlistCmds    = regexp.MustCompile("!" + playlists)
 	playlistSetCmds = regexp.MustCompile("^!set_" + playlists + " (.*)")
+
+	cmds = regexp.MustCompile("!([^ ]+)")
 )
 
 func irc() {
@@ -112,16 +114,40 @@ func bot(user, msg string, send func(string) error) (err error) {
 		}
 	case strings.Contains(msg, "!playlist"):
 		err = send("Which Playlist Would You Like? (!spotify, !apple, !google, !youtube)")
-	case playlistSetCmds.MatchString(msg) && admin(user, true):
-		match := playlistSetCmds.FindStringSubmatch(msg)
-		err = setPlaylist(match[1], match[2])
-		if err == nil {
-			err = send("Playlist Updated!")
+	case playlistSetCmds.MatchString(msg):
+		if admin(user, true) {
+			match := playlistSetCmds.FindStringSubmatch(msg)
+			err = setPlaylist(match[1], match[2])
+			if err == nil {
+				err = send("Playlist Updated!")
+			}
 		}
-	case strings.HasPrefix(msg, "!set_theme ") && admin(user, true):
-		err = setPlaylist("theme", msg[len("!set_theme "):])
-		if err == nil {
-			err = send("Theme Updated!")
+	case strings.HasPrefix(msg, "!set_theme "):
+		if admin(user, true) {
+			err = setPlaylist("theme", msg[len("!set_theme "):])
+			if err == nil {
+				err = send("Theme Updated!")
+			}
+		}
+	case strings.HasPrefix(msg, "!add_cmd "):
+		if admin(user, true) {
+			parts := strings.SplitN(msg, " ", 3)
+			if len(parts) < 3 {
+				break
+			}
+			_, err := db.Exec("INSERT INTO commands(name, value) VALUES(?, ?) "+
+				"ON CONFLICT(name) DO UPDATE SET value=excluded.value;", parts[1], parts[2])
+			if err == nil {
+				err = send("Command !" + parts[1] + " Added!")
+			}
+		}
+	case strings.HasPrefix(msg, "!remove_cmd "):
+		if admin(user, true) {
+			name := msg[len("!remove_cmd "):]
+			_, err := db.Exec("DELETE FROM commands WHERE name = ?;", name)
+			if err == nil {
+				err = send("Command !" + name + " Removed!")
+			}
 		}
 	case strings.HasPrefix(msg, "!add_user "):
 		if admin(user, false) {
@@ -150,6 +176,19 @@ func bot(user, msg string, send func(string) error) (err error) {
 				log.Printf("Clearing Submissions: %v", err)
 			}
 			err = send("Suggestions And Playlists Cleared.")
+			break
+		}
+	case cmds.MatchString(msg):
+		var value string
+		for _, match := range cmds.FindAllStringSubmatch(msg, -1) {
+			err := db.QueryRow("SELECT value FROM commands WHERE name = ?", match[1]).Scan(&value)
+			if err != nil {
+				if err != sql.ErrNoRows {
+					log.Printf("reading database: %v", err)
+				}
+				continue
+			}
+			err = send(value)
 			break
 		}
 	default:
